@@ -46,7 +46,7 @@ for letra in mensaje:
     espacio.markdown(f"<h1 style='text-align: center; color: #ff4500;'>{texto_mostrado}</h1>", unsafe_allow_html=True)
     time.sleep(0.3)  # Tiempo de retraso en segundos
 
-# Mensaje con efecto de parpadeo para tus compañeros de AFORE PENSIONISSSTE
+# Mensaje con efecto de parpadeo para contactos de Linkedin
 st.write("---")  # Separador
 st.markdown(
     """
@@ -63,7 +63,7 @@ st.markdown(
         }
     }
     </style>
-    <div class="blink">🎊 ¡Un saludo especial para todos mis compañeros de AFORE PENSIONISSSTE! 🎊</div>
+    <div class="blink">🎊 ¡Un saludo especial para todos aquellos que utilizan Likedin! 🎊</div>
     """,
     unsafe_allow_html=True
 )
@@ -128,7 +128,7 @@ st.write("---")
 st.header("🎉 ¡Haz tu deseo para el 2025! 🎉")
 
 # Formulario para enviar buenos deseos
-deseo = st.text_input("Escribe tus buenos deseos para el equipo", key="deseos")
+deseo = st.text_input("Escribe tus buenos deseos para todos los que utilizamos Linkedin", key="deseos")
 if st.button("Enviar deseo"):
     if deseo.strip():
         deseos_actualizados = guardar_deseo(deseo.strip())
@@ -140,7 +140,7 @@ if st.button("Enviar deseo"):
 try:
     deseos_previos = pd.read_csv("deseos.csv")
     if not deseos_previos.empty:
-        st.write("### Deseos enviados por el equipo:")
+        st.write("### Deseos enviados por alguien que utiliza Linkedin:")
         st.table(deseos_previos)
 except FileNotFoundError:
     st.write("Aún no se han enviado deseos.")
@@ -149,8 +149,7 @@ except FileNotFoundError:
 mensajes = [
     "¡Que este año te traiga mucha felicidad y éxito! 🎉",
     "¡Que todos tus sueños se hagan realidad en 2025! 🌟",
-    "¡A trabajar juntos para un gran 2025! 💪",
-    "¡Disfruta cada momento de este nuevo año! 🌈",
+     "¡Disfruta cada momento de este nuevo año! 🌈",
 ]
 
 mensaje_random = random.choice(mensajes)
