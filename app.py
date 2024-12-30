@@ -203,3 +203,9 @@ st.markdown(
 
 # Mensaje final
 st.success(" ¡Que sea un año lleno de éxitos y felicidad para todos!")
+
+
+# En el sidebar de Streamlit con el símbolo de derechos de autor
+with st.sidebar:
+    st.markdown("## © Copyrith")
+    st.markdown("Desarrollado por **Javier Horacio Pérez Ricárdez**")
