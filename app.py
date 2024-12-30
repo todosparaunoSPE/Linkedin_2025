@@ -158,6 +158,9 @@ st.info(f"💬 {mensaje_random}")
 # Barra lateral con cuenta regresiva
 with st.sidebar:
     st.header("⏳ Cuenta Regresiva para el Año Nuevo 2025 ⏳")
+
+    # Mostrar tu nombre
+    st.write("👤 **Javier Horacio Pérez Ricárdez**")
     
     # Insertar emojis para mayor interactividad
     st.markdown("🎉 **¡Falta poco para el Año Nuevo!** 🎉")
@@ -205,7 +208,4 @@ st.markdown(
 st.success(" ¡Que sea un año lleno de éxitos y felicidad para todos!")
 
 
-# En el sidebar de Streamlit con el símbolo de derechos de autor
-with st.sidebar:
-    st.markdown("## © Copyrith")
-    st.markdown("Desarrollado por **Javier Horacio Pérez Ricárdez**")
+
