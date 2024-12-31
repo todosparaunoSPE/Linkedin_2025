@@ -10,9 +10,6 @@ import time
 import datetime
 import random
 import pandas as pd
-import requests
-import json
-import base64
 import streamlit.components.v1 as components
 
 # Configuración de la página
@@ -50,7 +47,7 @@ for letra in mensaje:
     espacio.markdown(f"<h1 style='text-align: center; color: #ff4500;'>{texto_mostrado}</h1>", unsafe_allow_html=True)
     time.sleep(0.3)  # Tiempo de retraso en segundos
 
-# Mensaje con efecto de parpadeo para contactos de Linkedin
+# Mensaje con efecto de parpadeo para tus compañeros de AFORE PENSIONISSSTE
 st.write("---")  # Separador
 st.markdown(
     """
@@ -67,7 +64,7 @@ st.markdown(
         }
     }
     </style>
-    <div class="blink">🎊 ¡Un saludo especial para todos aquellos que utilizan LinkedIn! 🎊</div>
+    <div class="blink">🎊 ¡Un saludo especial para todos mis compañeros de AFORE PENSIONISSSTE! 🎊</div>
     """,
     unsafe_allow_html=True
 )
@@ -105,69 +102,41 @@ confetti_html = """
 """
 components.html(confetti_html)
 
-# Reemplaza con tus credenciales de GitHub y el nombre del repositorio
+# Mostrar video y deseos de los usuarios en la página principal
+st.write("---")
+st.header("🎶 Escucha un mensaje especial 🎶")
+st.audio("buenos_deseos.mp3", format="audio/mp3")
 
+st.write("---")
+st.header("🎉 ¡Haz tu deseo para el 2025! 🎉")
 
-GITHUB_API_URL = "https://api.github.com/repos/todosparaunoSPE/Linkedin_2025/contents/deseos.csv"
-GITHUB_TOKEN = "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"
+# Integrar formulario de Google Forms
+st.markdown(
+    """
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc_lkyVzhqnHd_EppZnxVJSdreaNh1PszE9GKvGt9sL7K2ClA/viewform" 
+            width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+    """,
+    unsafe_allow_html=True
+)
 
-# Función para obtener el contenido del archivo desde GitHub
-def obtener_contenido_github():
-    headers = {'Authorization': f'token {GITHUB_TOKEN}'}
-    response = requests.get(GITHUB_API_URL, headers=headers)
-    
-    if response.status_code == 200:
-        return response.json()
-    else:
-        st.error(f"No se pudo obtener el archivo. Error {response.status_code}")
-        return None
+# Mostrar deseos de los usuarios desde Google Sheets
+st.write("---")
+st.header("🎉 Deseos de los usuarios 🎉")
 
-# Función para actualizar el archivo en GitHub
-def actualizar_archivo_github(nuevo_deseo):
-    contenido = obtener_contenido_github()
-    
-    if contenido is not None:
-        # Obtener el contenido del archivo codificado en base64
-        archivo_base64 = contenido['content']
-        archivo_decodificado = base64.b64decode(archivo_base64).decode('utf-8')
+# URL pública de Google Sheets (exportar como CSV)
+SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStqq5sriSl3oE-8kRmY6TBARExtT2iTXztQaPQ7sjFWmaz_4RwAH8SzXBhxFvVhmAJ-Tzyz14KxOU7/pub?output=csv"
 
-        # Convertir a DataFrame y agregar el nuevo deseo
-        df = pd.read_csv(pd.compat.StringIO(archivo_decodificado))
-        df = df.append({"Deseo": nuevo_deseo}, ignore_index=True)
-
-        # Codificar el DataFrame actualizado en base64
-        archivo_actualizado = df.to_csv(index=False)
-        archivo_base64_actualizado = base64.b64encode(archivo_actualizado.encode('utf-8')).decode('utf-8')
-
-        # Crear el payload para la API de GitHub
-        payload = {
-            "message": f"Agregar nuevo deseo: {nuevo_deseo}",
-            "content": archivo_base64_actualizado,
-            "sha": contenido['sha']
-        }
-
-        # Realizar la solicitud PUT para actualizar el archivo
-        headers = {'Authorization': f'token {GITHUB_TOKEN}'}
-        response = requests.put(GITHUB_API_URL, headers=headers, data=json.dumps(payload))
-
-        if response.status_code == 200:
-            st.success("¡Deseo guardado exitosamente!")
-        else:
-            st.error(f"No se pudo guardar el deseo. Error {response.status_code}")
-
-# Formulario para enviar deseos
-deseo = st.text_input("Escribe tus buenos deseos para todos los que utilizan LinkedIn", key="deseos")
-if st.button("Enviar deseo"):
-    if deseo.strip():
-        actualizar_archivo_github(deseo.strip())
-        st.success(f"🎉 ¡Gracias por compartir tu deseo: {deseo}! ")
-    else:
-        st.warning("Por favor, escribe un deseo antes de enviarlo.")
+try:
+    df = pd.read_csv(SHEET_URL)
+    st.dataframe(df)
+except Exception as e:
+    st.error("No se pudieron cargar los deseos de los usuarios. Por favor, verifica la configuración del enlace.")
 
 # Mensajes aleatorios de buenos deseos
 mensajes = [
     "¡Que este año te traiga mucha felicidad y éxito! 🎉",
     "¡Que todos tus sueños se hagan realidad en 2025! 🌟",
+    "¡A trabajar juntos para un gran 2025! 💪",
     "¡Disfruta cada momento de este nuevo año! 🌈",
 ]
 
@@ -177,9 +146,6 @@ st.info(f"💬 {mensaje_random}")
 # Barra lateral con cuenta regresiva
 with st.sidebar:
     st.header("⏳ Cuenta Regresiva para el Año Nuevo 2025 ⏳")
-
-    # Mostrar tu nombre
-    st.write("👤 **Javier Horacio Pérez Ricárdez**")
     
     # Insertar emojis para mayor interactividad
     st.markdown("🎉 **¡Falta poco para el Año Nuevo!** 🎉")
@@ -190,7 +156,7 @@ with st.sidebar:
     espacio_contador = st.empty()  # Contenedor para la cuenta regresiva
 
     while True:
-        ahora = datetime.datetime.now() - datetime.timedelta(hours=6)  # Restar las 9 horas de desfase
+        ahora = datetime.datetime.now() - datetime.timedelta(hours=6)  # Restar las 6 horas de desfase
         tiempo_restante = año_nuevo - ahora
 
         # Mostrar la cuenta regresiva con días, horas, minutos y segundos
@@ -203,24 +169,6 @@ with st.sidebar:
 
         # Actualizar cada segundo
         time.sleep(1)
-
-# Fondo animado
-st.markdown(
-    """
-    <style>
-    body {
-        background: radial-gradient(circle, #ffe4e1, #ff4500, #ff6347);
-        animation: background-animation 5s infinite;
-    }
-    @keyframes background-animation {
-        0% {background: #ffe4e1;}
-        50% {background: #ff4500;}
-        100% {background: #ff6347;}
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # Mensaje final
 st.success(" ¡Que sea un año lleno de éxitos y felicidad para todos!")
