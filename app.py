@@ -4,6 +4,7 @@ Created on Mon Dec 30 11:46:30 2024
 
 @author: jperezr
 """
+
 import streamlit as st
 import time
 import datetime
@@ -63,7 +64,7 @@ st.markdown(
         }
     }
     </style>
-    <div class="blink">🎊 ¡Un saludo especial para todos aquellos que utilizan Likedin! 🎊</div>
+    <div class="blink">🎊 ¡Un saludo especial para todos aquellos que utilizan LinkedIn! 🎊</div>
     """,
     unsafe_allow_html=True
 )
@@ -115,8 +116,13 @@ def guardar_deseo(nuevo_deseo):
     nuevo_registro = pd.DataFrame({"Deseo": [nuevo_deseo]})
     df = pd.concat([df, nuevo_registro], ignore_index=True)
 
-    # Guardar los cambios en el archivo CSV
-    df.to_csv(archivo, index=False)
+    try:
+        # Guardar los cambios en el archivo CSV
+        df.to_csv(archivo, index=False)
+        print(f"Deseo guardado: {nuevo_deseo}")  # Depuración
+    except Exception as e:
+        print(f"Error al guardar el archivo: {e}")  # Depuración
+
     return df
 
 # Mostrar video y deseos de los usuarios en la página principal
@@ -128,7 +134,7 @@ st.write("---")
 st.header("🎉 ¡Haz tu deseo para el 2025! 🎉")
 
 # Formulario para enviar buenos deseos
-deseo = st.text_input("Escribe tus buenos deseos para todos los que utilizamos Linkedin", key="deseos")
+deseo = st.text_input("Escribe tus buenos deseos para todos los que utilizan LinkedIn", key="deseos")
 if st.button("Enviar deseo"):
     if deseo.strip():
         deseos_actualizados = guardar_deseo(deseo.strip())
@@ -140,7 +146,7 @@ if st.button("Enviar deseo"):
 try:
     deseos_previos = pd.read_csv("deseos.csv")
     if not deseos_previos.empty:
-        st.write("### Deseos enviados por alguien que utiliza Linkedin:")
+        st.write("### Deseos enviados por alguien que utiliza LinkedIn:")
         st.table(deseos_previos)
 except FileNotFoundError:
     st.write("Aún no se han enviado deseos.")
@@ -149,7 +155,7 @@ except FileNotFoundError:
 mensajes = [
     "¡Que este año te traiga mucha felicidad y éxito! 🎉",
     "¡Que todos tus sueños se hagan realidad en 2025! 🌟",
-     "¡Disfruta cada momento de este nuevo año! 🌈",
+    "¡Disfruta cada momento de este nuevo año! 🌈",
 ]
 
 mensaje_random = random.choice(mensajes)
@@ -166,7 +172,6 @@ with st.sidebar:
     st.markdown("🎉 **¡Falta poco para el Año Nuevo!** 🎉")
     st.image("https://www.w3schools.com/w3images/lights.jpg", caption="¡El Año Nuevo está por llegar!", use_container_width=True)
 
-        
     # Reloj de cuenta regresiva dinámica con segundos
     año_nuevo = datetime.datetime(2025, 1, 1, 0, 0, 0)
     espacio_contador = st.empty()  # Contenedor para la cuenta regresiva
@@ -206,6 +211,3 @@ st.markdown(
 
 # Mensaje final
 st.success(" ¡Que sea un año lleno de éxitos y felicidad para todos!")
-
-
-
