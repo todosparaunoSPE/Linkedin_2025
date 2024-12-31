@@ -10,6 +10,9 @@ import time
 import datetime
 import random
 import pandas as pd
+import requests
+import json
+import base64
 import streamlit.components.v1 as components
 
 # Configuración de la página
@@ -102,54 +105,62 @@ confetti_html = """
 """
 components.html(confetti_html)
 
-# Funcionalidad para guardar deseos en un archivo CSV
-def guardar_deseo(nuevo_deseo):
-    archivo = "deseos.csv"
-    try:
-        # Cargar el archivo CSV si existe
-        df = pd.read_csv(archivo)
-    except FileNotFoundError:
-        # Crear un DataFrame vacío si no existe
-        df = pd.DataFrame(columns=["Deseo"])
+# Reemplaza con tus credenciales de GitHub y el nombre del repositorio
+GITHUB_API_URL = "https://github.com/todosparaunoSPE/Linkedin_2025/blob/main/deseos.csv"
+GITHUB_TOKEN = "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"
 
-    # Agregar el nuevo deseo al DataFrame
-    nuevo_registro = pd.DataFrame({"Deseo": [nuevo_deseo]})
-    df = pd.concat([df, nuevo_registro], ignore_index=True)
+# Función para obtener el contenido del archivo desde GitHub
+def obtener_contenido_github():
+    headers = {'Authorization': f'token {GITHUB_TOKEN}'}
+    response = requests.get(GITHUB_API_URL, headers=headers)
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        st.error(f"No se pudo obtener el archivo. Error {response.status_code}")
+        return None
 
-    try:
-        # Guardar los cambios en el archivo CSV
-        df.to_csv(archivo, index=False)
-        print(f"Deseo guardado: {nuevo_deseo}")  # Depuración
-    except Exception as e:
-        print(f"Error al guardar el archivo: {e}")  # Depuración
+# Función para actualizar el archivo en GitHub
+def actualizar_archivo_github(nuevo_deseo):
+    contenido = obtener_contenido_github()
+    
+    if contenido is not None:
+        # Obtener el contenido del archivo codificado en base64
+        archivo_base64 = contenido['content']
+        archivo_decodificado = base64.b64decode(archivo_base64).decode('utf-8')
 
-    return df
+        # Convertir a DataFrame y agregar el nuevo deseo
+        df = pd.read_csv(pd.compat.StringIO(archivo_decodificado))
+        df = df.append({"Deseo": nuevo_deseo}, ignore_index=True)
 
-# Mostrar video y deseos de los usuarios en la página principal
-st.write("---")
-st.header("🎶 Escucha un mensaje especial 🎶")
-st.audio("buenos_deseos.mp3", format="audio/mp3")
+        # Codificar el DataFrame actualizado en base64
+        archivo_actualizado = df.to_csv(index=False)
+        archivo_base64_actualizado = base64.b64encode(archivo_actualizado.encode('utf-8')).decode('utf-8')
 
-st.write("---")
-st.header("🎉 ¡Haz tu deseo para el 2025! 🎉")
+        # Crear el payload para la API de GitHub
+        payload = {
+            "message": f"Agregar nuevo deseo: {nuevo_deseo}",
+            "content": archivo_base64_actualizado,
+            "sha": contenido['sha']
+        }
 
-# Formulario para enviar buenos deseos
+        # Realizar la solicitud PUT para actualizar el archivo
+        headers = {'Authorization': f'token {GITHUB_TOKEN}'}
+        response = requests.put(GITHUB_API_URL, headers=headers, data=json.dumps(payload))
+
+        if response.status_code == 200:
+            st.success("¡Deseo guardado exitosamente!")
+        else:
+            st.error(f"No se pudo guardar el deseo. Error {response.status_code}")
+
+# Formulario para enviar deseos
 deseo = st.text_input("Escribe tus buenos deseos para todos los que utilizan LinkedIn", key="deseos")
 if st.button("Enviar deseo"):
     if deseo.strip():
-        deseos_actualizados = guardar_deseo(deseo.strip())
+        actualizar_archivo_github(deseo.strip())
         st.success(f"🎉 ¡Gracias por compartir tu deseo: {deseo}! ")
     else:
         st.warning("Por favor, escribe un deseo antes de enviarlo.")
-
-# Mostrar deseos enviados previamente
-try:
-    deseos_previos = pd.read_csv("deseos.csv")
-    if not deseos_previos.empty:
-        st.write("### Deseos enviados por alguien que utiliza LinkedIn:")
-        st.table(deseos_previos)
-except FileNotFoundError:
-    st.write("Aún no se han enviado deseos.")
 
 # Mensajes aleatorios de buenos deseos
 mensajes = [
