@@ -47,7 +47,7 @@ for letra in mensaje:
     espacio.markdown(f"<h1 style='text-align: center; color: #ff4500;'>{texto_mostrado}</h1>", unsafe_allow_html=True)
     time.sleep(0.3)  # Tiempo de retraso en segundos
 
-# Mensaje con efecto de parpadeo para tus compañeros de AFORE PENSIONISSSTE
+# Mensaje con efecto de parpadeo para los que utilizan Linkedin
 st.write("---")  # Separador
 st.markdown(
     """
@@ -64,7 +64,7 @@ st.markdown(
         }
     }
     </style>
-    <div class="blink">🎊 ¡Un saludo especial para todos mis compañeros de AFORE PENSIONISSSTE! 🎊</div>
+    <div class="blink">🎊 ¡Un saludo especial para todos quienes utilizamos Linkedin! 🎊</div>
     """,
     unsafe_allow_html=True
 )
@@ -136,7 +136,6 @@ except Exception as e:
 mensajes = [
     "¡Que este año te traiga mucha felicidad y éxito! 🎉",
     "¡Que todos tus sueños se hagan realidad en 2025! 🌟",
-    "¡A trabajar juntos para un gran 2025! 💪",
     "¡Disfruta cada momento de este nuevo año! 🌈",
 ]
 
