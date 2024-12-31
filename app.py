@@ -106,7 +106,9 @@ confetti_html = """
 components.html(confetti_html)
 
 # Reemplaza con tus credenciales de GitHub y el nombre del repositorio
-GITHUB_API_URL = "https://github.com/todosparaunoSPE/Linkedin_2025/blob/main/deseos.csv"
+
+
+GITHUB_API_URL = "https://api.github.com/repos/todosparaunoSPE/Linkedin_2025/contents/deseos.csv"
 GITHUB_TOKEN = "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"
 
 # Función para obtener el contenido del archivo desde GitHub
